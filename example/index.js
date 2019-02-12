@@ -1,6 +1,3 @@
-// # Example of the flow
-//
-
 const Web3 = require("web3");
 const Web3Utils = require("web3-utils");
 const web3 = new Web3("http://localhost:8545/");
@@ -56,6 +53,8 @@ async function flow(alice, urbi) {
   console.log("Here is my data, signed and ready to be sent to Urbi");
   console.log(aliceSignedData);
 
+  console.log("\n\n");
+
   console.log(
     "Hello, I'm Urbi. I just got a request and I need to validate it."
   );
@@ -80,7 +79,7 @@ async function flow(alice, urbi) {
   }
 
   console.log(
-    "Here I'm asking to the Official Identity Provider",
+    "Here I'm asking to the Official Identity Registry",
     "if the driving license data is legit.",
     "I also check if Alice is a real person and will do some KYC with her.",
     "If everything is successful, I'll then proceed and register the",
