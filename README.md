@@ -99,16 +99,16 @@ Alice wants to reserve a car with BobCars. She is not a user and she needs to re
 In April 2018, the World Economic Forum released the report [Blockchain Beyond the Hype—A Practical Framework for Business Leaders](https://www.weforum.org/whitepapers/blockchain-beyond-the-hype). The report provides a *decision tree* "to enable rapid initial analysis of whether blockchain is an appropriate solution for a defined problem". The 11 questions (and answers) in the decision tree are the following.
 
 **Are you trying to remove intermediaries or brokers?**<br />
-Yes. As we write in the problem statement, today data is centralized in few identity verification platforms.
+Yes. As we write in the problem statement, today's data is centralized in few identity verification platforms.
 
 **Are you working with digital assets (versus physical assets)**<br />
 Yes. The digital asset is the certification that you can drive a vehicle (a.k.a. driving license).
 
 **Can you create a permanent authoritative record of the digital asset inquestion?**<br />
-Yes, once a driving license has been validated, it might take up to 10 years to validate it again. There are other events that can occur in the meantime: a driving license is lost/stolen, or voided. Depending on the infrastructure provided by the Official Identity Registry, this information can be obtained immediately or with some delay. In any case, the responsibility of the Certification Authority is to update the record in the smart contract.
+Yes, once a driving license has been validated, it might take up to 10 years to expire. There are other events that can occur in the meantime: a driving license is lost/stolen, or voided. Depending on the infrastructure provided by the Official Identity Registry, this information can be obtained immediately or with some delay. In any case, the responsibility of the Certification Authority is to update the record in the smart contract.
 
 **Do you require high performance, rapid (~millisecond) transactions?**<br />
-No. The process to validate a driving license and go through KYC of the user takes minutes. Once the process is done, we don't are if the process of registering the driving license in the blockchain takes few seconds or few minutes.
+No. The process to validate a driving license and go through KYC of the user takes minutes. Once the process is done, we don't care if the process of registering the driving license in the blockchain takes few seconds or few minutes.
 
 **Do you intend to store large amounts of non-transactional data as part of your solution?**<br />
 No. For each registration, we estimate the amount of data stored to be less than 160 bytes.
