@@ -30,7 +30,7 @@ urbiwallet://consent/<caller_readable_name>/<caller_callback_link>?challenge=<ch
 ```
 
 where:
-* `<caller_readable_name>` is the URI-encoded string that will be displayed to the user in order to get their approval. Example dialog (with `caller_readble_name` set to `"My%20App"`):
+* `<caller_readable_name>` is the URI-encoded string that will be displayed to the user in order to get their approval. Example dialog (with `caller_readable_name` set to `"My%20App"`):
 
     > `My App` is requesting to read your personal data. Confirm letting `My App` read your data? \[Yes\] \[No\]
 * `<caller_callback_link>` is the URI-encoded link that the Wallet will open to notify the App of the outcome of the access request (e.g., `myapp%3A%2F%2Fwallet-callback`). The App must therefore be configured to process these deep links. See [this guide for Android][1], and [this one for iOS][2] for more info
