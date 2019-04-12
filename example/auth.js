@@ -36,19 +36,38 @@ async function auth(alice, aliceData, urbi) {
   console.log("Step 1: App sends challange to Wallet");
   const appRequestToWallet = {
     app: "Provider App",
+    callback: "provider-app://wallet-callback",
     challenge: "439509230203971840"
   };
-  console.log(JSON.stringify(appRequestToWallet, null, 2), "\n");
+  console.log(
+    "urbiwallet://consent/" +
+      encodeURIComponent(appRequestToWallet.app) +
+      "/" +
+      encodeURIComponent(appRequestToWallet.callback) +
+      "?challenge=" +
+      appRequestToWallet.challenge +
+      "\n\n"
+  );
 
   //
   // Step 2
   //
-  console.log("Step 2: App sends challange to Wallet");
+  console.log("Step 2: Wallet opens App to return response and data.");
   const walletResponseToApp = {
     response: await web3.eth.sign(appRequestToWallet.challenge, alice),
-    data: aliceData
+    payload: serialize(aliceData)
   };
-  console.log(JSON.stringify(walletResponseToApp, null, 2), "\n");
+  console.log(
+    appRequestToWallet.app +
+      "://" +
+      appRequestToWallet.callback +
+      "?consent=true" +
+      "&response=" +
+      walletResponseToApp.response +
+      "&payload=" +
+      encodeURIComponent(walletResponseToApp.payload) +
+      "\n\n"
+  );
 
   //
   // Step 3: App sends data to the Backend
@@ -57,9 +76,9 @@ async function auth(alice, aliceData, urbi) {
   const appRequestToBackend = {
     challenge: appRequestToWallet.challenge,
     response: walletResponseToApp.response,
-    data: walletResponseToApp.data
+    payload: walletResponseToApp.payload
   };
-  console.log(JSON.stringify(appRequestToBackend, null, 2), "\n");
+  console.log(JSON.stringify(appRequestToBackend, null, 2), "\n\n");
 
   //
   // Step 4: Validate Alice's data
@@ -69,7 +88,7 @@ async function auth(alice, aliceData, urbi) {
     appRequestToBackend.challenge,
     appRequestToBackend.response
   );
-  const aliceDataProof = keccak256(serialize(aliceData));
+  const aliceDataProof = keccak256(appRequestToBackend.payload);
 
   const contract = new web3.eth.Contract(
     registryContract.abi,

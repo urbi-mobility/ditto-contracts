@@ -119,7 +119,7 @@ const aliceEthereumAddress = web3.eth.accounts.recover(
 
 Then it calculates the *hash* of the data.
 ```js
-const aliceDataProof = keccak256(serialize(aliceData));
+const aliceDataProof = keccak256(appRequestToBackend.payload);
 ```
 
 Then, it loads the smart contract interface.
@@ -159,6 +159,54 @@ if (
 
 If all conditions are true, then the data that Alice shared with us is valid and certified. The Backend can return an affirmative answer to the App.
 
-## Notes on JSON serialization
 
-To be written
+## Notes on JSON serialization
+The certifications are stored in a smart contract. The smart contract maps a user to the certification data. A user is represented by an *Ethereum address*. Given a user, we can retrieve the data attached to it (if any). The certification data is a struct with the following fields:
+
+```
+address certifier;
+bytes32 proof;
+uint256 expirationDate;
+```
+
+`certifier` is the *Ethereum address* of the certification authority, `expirationDate` is the expiration date of the data.
+
+`proof` is the **hash of the user's data**. To hash the data, BLOCK-ID uses a specific hashing function: `keccak256`. The input of a hashing function is bytes, so we need to serialize *data* to bytes. A simple serialization format is the utf8 encoded string of the json of the data (equivalent to the JavaScript function `JSON.stringify`).
+Since *data* is a mapping itself, and mappings don't define the order of their elements. This means that given the same *data* mapping, we might end up with different utf8 encoded strings and hence different hashes. That's why we need to force the order of the items before serializing the *data*.
+
+Given the `data` mapping, this is how to calculate its signature (or **proof**).
+
+```js
+const { keccak256 } = require("web3-utils");
+
+function serialize(obj) {
+  function sortAndClean(obj) {
+    const keys = Object.keys(obj).sort();
+    const sorted = {};
+    for (let i = 0; i < keys.length; i++) {
+      let key = keys[i];
+      let value = obj[key];
+      if (value === null) {
+        continue;
+      }
+      if (value.constructor === Object) {
+        value = sortAndClean(value);
+      }
+      sorted[key] = value;
+    }
+    return sorted;
+  }
+  return JSON.stringify(sortAndClean(obj));
+}
+
+const data = {
+  "address": "Via Tasso 11",
+  "birthCountry": "Italy",
+  "birthDate": "1950-01-22"
+  /* ... */
+};
+
+const proof = keccak256(serialize(data));
+```
+
+Note that the Wallet returns a string representing the user's data to the Provider App. That string is **already sorted** in the way it should be, so the Backend can calculate the proof directly from that string.
