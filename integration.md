@@ -29,17 +29,17 @@ The App opens the Wallet by opening a deep link to:
 urbiwallet://consent/<caller_readable_name>/<caller_callback_link>?challenge=<challenge>
 ```
 
-where 
+where:
 * `<caller_readable_name>` is the URI-encoded string that will be displayed to the user in order to get their approval. Example dialog (with `caller_readble_name` set to `"My%20App"`):
 
     > `My App` is requesting to read your personal data. Confirm letting `My App` read your data? \[Yes\] \[No\]
-* `<caller_callback_link>` is the URI-encoded link that the Wallet will open to notify the App of the outcome of the access request (e.g., `myapp%3A%2F%2Fwallet-callback`). The App must therefore be configured to process these deep links. See [this guide for Android][1], and [this one for iOS][2] for more info 
-* `challenge` is a random string that the Wallet will sign using Alice's private key 
+* `<caller_callback_link>` is the URI-encoded link that the Wallet will open to notify the App of the outcome of the access request (e.g., `myapp%3A%2F%2Fwallet-callback`). The App must therefore be configured to process these deep links. See [this guide for Android][1], and [this one for iOS][2] for more info
+* `challenge` is a random string that the Wallet will sign using Alice's private key
 
 An example link could thus be:
 
 ```
-urbiwallet://consent/My%20App/myapp%3A%2F%2Fwallet-callback?challenge=71246812948247
+urbiwallet://consent/My%20App/myapp%3A%2F%2Fwallet-callback?challenge=439509230203971840
 ```
 
 [1]: https://developer.android.com/training/app-links/deep-linking
@@ -104,7 +104,7 @@ The App sends the data it received from the Wallet to its Backend. For example, 
 }
 ```
 
-Note that `data` contains the response from the Wallet after URI decoding (by using a function such as Javascript's `decodeURIComponent()`), but __without__ deserializing from JSON. That way, the Backend can verify the signature on the Blockchain by comparing the hash stored in the smart contract against the `data` field as-is. More on this in [the serialization section](notes-on-json-serialization) further below.
+Note that `data` contains the response from the Wallet after URI decoding (by using a function such as Javascript's `decodeURIComponent()`), but __without__ deserializing from JSON. That way, the Backend can verify the signature on the Blockchain by comparing the hash stored in the smart contract against the `data` field as-is. More on this in [the serialization section](#notes-on-json-serialization) further below.
 
 ### Step 4: The Backend validates the data using the smart contract
 The Backend has now all the data needed to validate Alice's request.
