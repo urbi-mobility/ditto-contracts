@@ -13,8 +13,8 @@ contract Registry is WhitelistedRole {
 
 	constructor() WhitelistedRole() public {}
 
-  function addCertification(address certifier, bytes32 proof, uint256 expirationDate) onlyWhitelisted public {
-    certifications[certifier] = Certification({
+  function addCertification(address user, bytes32 proof, uint256 expirationDate) onlyWhitelisted public {
+    certifications[user] = Certification({
       certifier: msg.sender,
       proof: proof,
       expirationDate: expirationDate
