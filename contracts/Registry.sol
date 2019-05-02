@@ -1,9 +1,8 @@
-pragma solidity >=0.4.21 <0.6.0;
+pragma solidity ^0.5.0;
 
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/access/roles/WhitelistedRole.sol";
 
-
-contract Registry is Ownable {
+contract Registry is WhitelistedRole {
   struct Certification {
     address certifier;
     bytes32 proof;
@@ -12,12 +11,13 @@ contract Registry is Ownable {
 
   mapping(address => Certification) public certifications;
 
-  function addCertification(address _address, bytes32 _proof, uint256 _expirationDate) onlyOwner public {
-    certifications[_address] = Certification({
+	constructor() WhitelistedRole() public {}
+
+  function addCertification(address certifier, bytes32 proof, uint256 expirationDate) onlyWhitelisted public {
+    certifications[certifier] = Certification({
       certifier: msg.sender,
-      proof: _proof,
-      expirationDate: _expirationDate
+      proof: proof,
+      expirationDate: expirationDate
     });
   }
 }
-
