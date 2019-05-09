@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/urbi-mobility/contracts.svg?branch=master)](https://travis-ci.org/urbi-mobility/contracts)
+
 Hello there, this project is a proof of concept, and it's not intended to be used in production.
 
 # Driving License wallet initiative
