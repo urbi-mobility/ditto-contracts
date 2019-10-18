@@ -18,15 +18,9 @@
  *
  */
 
-/*
-const HDWalletProvider = require("truffle-hdwallet-provider");
-
-const fs = require("fs");
-const mnemonic = fs
-  .readFileSync(".secret")
-  .toString()
-  .trim();
-*/
+require("dotenv").config();
+const PrivateKeyProvider = require("truffle-privatekey-provider");
+const secret = process.env.SECRET;
 
 module.exports = {
   /**
@@ -64,7 +58,10 @@ module.exports = {
 
     rinkeby: {
       provider: () =>
-        new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/"),
+        new PrivateKeyProvider(
+          secret,
+          `https://rinkeby.infura.io/v3/${process.env.INFURA_KEY}`
+        ),
       network_id: 4,
       gas: 5500000,
       confirmations: 2,
@@ -72,10 +69,13 @@ module.exports = {
       skipDryRun: true
     },
 
-    sokol: {
+    mainnet: {
       provider: () =>
-        new HDWalletProvider(mnemonic, "https://sokol.poa.network:443/"),
-      network_id: "*",
+        new PrivateKeyProvider(
+          secret,
+          `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`
+        ),
+      network_id: 4,
       gas: 5500000,
       confirmations: 2,
       timeoutBlocks: 200,
@@ -103,7 +103,7 @@ module.exports = {
 
   // Set default mocha options here, use special reporters etc.
   mocha: {
-    // timeout: 100000
+    timeout: 100000
   },
 
   // Configure your compilers

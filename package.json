@@ -4,13 +4,17 @@
   "description": "",
   "main": "example.js",
   "scripts": {
-    "test": "ethnode -e 'truffle test'"
+    "test": "ethnode -e 'truffle test'",
+    "deploy:staging": "truffle migrate --network rinkeby",
+    "deploy:production": "truffle migrate --network mainnet"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "openzeppelin-solidity": "^2.1.2",
     "truffle-hdwallet-provider": "^1.0.3",
+    "truffle-privatekey-provider": "^1.3.0",
     "web3": "^1.2.1",
     "web3-utils": "^1.2.1"
   },
