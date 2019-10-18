@@ -3,37 +3,39 @@ pragma solidity ^0.5.0;
 import "openzeppelin-solidity/contracts/access/roles/WhitelistedRole.sol";
 
 contract Registry is WhitelistedRole {
+    event CertificationAdded(address indexed account);
+    event CertificationRemoved(address indexed account);
 
-  event CertificationAdded(address indexed account);
-  event CertificationRemoved(address indexed account);
+    struct Certification {
+        address certifier;
+        bytes32 proof;
+        uint256 expirationDate;
+    }
 
-  struct Certification {
-    address certifier;
-    bytes32 proof;
-    uint256 expirationDate;
-  }
+    mapping(address => Certification) public certifications;
 
-  mapping(address => Certification) public certifications;
+    constructor() public WhitelistedRole() {}
 
-	constructor() WhitelistedRole() public {}
+    function addCertification(
+        address account,
+        bytes32 proof,
+        uint256 expirationDate
+    ) public onlyWhitelisted {
+        require(certifications[account].certifier == address(0));
+        certifications[account] = Certification({
+            certifier: msg.sender,
+            proof: proof,
+            expirationDate: expirationDate
+        });
+        emit CertificationAdded(account);
+    }
 
-  function addCertification(address account, bytes32 proof, uint256 expirationDate) onlyWhitelisted public {
-    require(certifications[account].certifier == address(0));
-    certifications[account] = Certification({
-      certifier: msg.sender,
-      proof: proof,
-      expirationDate: expirationDate
-    });
-    emit CertificationAdded(account);
-  }
-
-  function removeCertification(address account) public {
-    require(
-      account == msg.sender ||
-      certifications[account].certifier == msg.sender
-    );
-
-    delete certifications[account];
-    emit CertificationRemoved(account);
-  }
+    function removeCertification(address account) public {
+        require(
+            account == msg.sender ||
+                certifications[account].certifier == msg.sender
+        );
+        delete certifications[account];
+        emit CertificationRemoved(account);
+    }
 }
