@@ -46,11 +46,6 @@ module.exports = {
       network_id: "*" // Any network (default: none)
     },
 
-    local: {
-      provider: () => new PrivateKeyProvider(secret, "http://localhost:8545"),
-      network_id: "*" // Any network (default: none)
-    },
-
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port

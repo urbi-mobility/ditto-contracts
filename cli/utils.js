@@ -1,3 +1,5 @@
+const readline = require("readline");
+
 // https://ethereum.stackexchange.com/a/17101/33448
 const NETWORK_ID_TO_NAME = {
   //  0: {name: "Olympic", description: "Ethereum public pre-release PoW testnet"},
@@ -53,6 +55,20 @@ function getNetworkInfo(networkId) {
   return NETWORK_ID_TO_NAME[networkId] || NETWORK_ID_TO_NAME["*"];
 }
 
+const prompt = async question => {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+  return new Promise(resolve =>
+    rl.question(question, line => {
+      rl.close();
+      resolve(line.trim().toLowerCase());
+    })
+  );
+};
+
 module.exports = {
-  getNetworkInfo
+  getNetworkInfo,
+  prompt
 };
