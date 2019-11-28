@@ -12,7 +12,8 @@ const c = require("chalk");
 const utils = require("./utils");
 const {bigNumberify, parseUnits} = ethers.utils;
 const log = console.log;
-const {prompt, promisify} = require("util");
+const {promisify} = require("util");
+const {prompt} = require("./utils");
 
 const CONTRACT = "Registry";
 const SOURCE_DIR = "contracts";
@@ -25,8 +26,10 @@ async function getContext(program) {
   let contract;
   let contractMetadata;
   let chainId;
-  const network =
-    program.network === "local" ? "http://localhost:8545" : program.network;
+  let network =
+    program.network === "development"
+      ? "http://localhost:8545"
+      : program.network;
 
   if (network.startsWith("http")) {
     provider = new ethers.providers.JsonRpcProvider(network);
@@ -56,16 +59,26 @@ async function getContext(program) {
     process.exit(1);
   }
 
-  const contractAddress = contractMetadata.networks[chainId].address;
-  const contractAbi = contractMetadata.abi;
+  let contractAddress = contractMetadata.networks[chainId].address;
+  let contractAbi = contractMetadata.abi;
+  let wallet;
+  let address;
 
-  const wallet = new ethers.Wallet(process.env.SECRET, provider);
+  if (program.network === "development") {
+    wallet = provider.getSigner(0);
+    address = await wallet.getAddress();
+  } else {
+    wallet = ethers.Wallet(process.env.SECRET, provider);
+    address = wallet.address;
+  }
+
   if (contractAddress) {
     contract = new ethers.Contract(contractAddress, contractAbi, wallet);
   }
 
   return {
     wallet,
+    address,
     chainId,
     provider,
     contract,
@@ -81,13 +94,13 @@ async function getContext(program) {
   };
 }
 
-async function info({wallet, chainId, contractMetadata, network}) {
+async function info({provider, address, chainId, contractMetadata, network}) {
   const networks = contractMetadata.networks;
 
-  log("Wallet address:", c.green(wallet.address));
+  log("Wallet address:", c.green(address));
   log(
     "Wallet funds:",
-    c.green(ethers.utils.formatEther(await wallet.getBalance())),
+    c.green(ethers.utils.formatEther(await provider.getBalance(address))),
     "ETH"
   );
   log("Connected to network:", c.green(network));
@@ -136,7 +149,7 @@ async function call(name, params, {contract, provider, gasPrice, gasLimit}) {
         "Simulation call fails:",
         JSON.parse(e.responseText).error.message
       );
-      process.exit(1);
+      // process.exit(1);
     }
     throw e;
   }
@@ -147,11 +160,11 @@ async function call(name, params, {contract, provider, gasPrice, gasLimit}) {
     gas = gasPrice;
   }
 
-  const rate = await getRate();
-  const euros =
+  let rate = await getRate();
+  let euros =
     est
       .mul(gas)
-      .mul(rate * 100)
+      .mul(Math.round(rate * 100))
       .div("1000000000000000")
       .toNumber() / 100000;
   log("Calling", c.green(name));
@@ -164,18 +177,19 @@ async function call(name, params, {contract, provider, gasPrice, gasLimit}) {
     "Gwei"
   );
   log("Estimated cost:", c.green(euros), "€");
-  if ((await prompt("Continue? (yes/no)")) !== "y") {
+  if ((await prompt("Continue? (y/n) ")) !== "y") {
     return;
   }
   try {
-    const overrides = {gasPrice};
+    let overrides = {};
     if (gasPrice !== "auto") {
       overrides.gasPrice = gasPrice;
     }
     if (gasLimit !== "auto") {
       overrides.gasLimit = gasLimit;
     }
-    const receipt = await contract.functions[name](...params, overrides);
+    let receipt = await contract.functions[name](...params, overrides);
+    log("Transaction mined.");
     log(receipt);
   } catch (e) {
     throw e;
@@ -184,6 +198,19 @@ async function call(name, params, {contract, provider, gasPrice, gasLimit}) {
 
 async function adminAdd(address, ctx) {
   return await call("addWhitelistAdmin", [address], ctx);
+}
+
+async function authorityAdd(address, ctx) {
+  return await call("addWhitelisted", [address], ctx);
+}
+
+async function authorityRemove(address, ctx) {
+  return await call("removeWhitelisted", [address], ctx);
+}
+
+// Test
+async function adminRenounce(ctx) {
+  return await call("addWhitelistAdmin", ctx);
 }
 
 function prepare(callback) {
@@ -196,7 +223,7 @@ function prepare(callback) {
 
 program.version("0.0.1");
 program
-  .option("-n, --network <name>", "Network to connect to", "local")
+  .option("-n, --network <name>", "Network to connect to", "development")
   .option("-d, --dryrun", "Don't commit things on blockchain")
   .option("-y, --yes", "Don't ask for confirmation")
   .option("-l, --gaslimit <limit>", "Gas limit", "auto")
@@ -205,6 +232,10 @@ program
   .action(prepare(info));
 
 program.command("admin-add <address>").action(prepare(adminAdd));
+program.command("admin-renounce").action(prepare(adminRenounce));
+program.command("authority-add <address>").action(prepare(authorityAdd));
+program.command("authority-remove <address>").action(prepare(authorityRemove));
+
 try {
   program.parse(process.argv);
 } catch (e) {

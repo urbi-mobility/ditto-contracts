@@ -5,7 +5,7 @@
   "main": "example.js",
   "scripts": {
     "test": "ethnode -e 'truffle test'",
-    "deploy:local": "truffle migrate --network local",
+    "deploy:development": "truffle migrate --network development",
     "deploy:staging": "truffle migrate --network rinkeby",
     "deploy:production": "truffle migrate --network mainnet"
   },
