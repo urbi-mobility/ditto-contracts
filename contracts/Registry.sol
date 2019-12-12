@@ -21,7 +21,7 @@ contract Registry is WhitelistedRole {
         bytes32 proof,
         uint256 expirationDate
     ) public onlyWhitelisted {
-        require(certifications[account].certifier == address(0));
+        require(certifications[account].certifier == address(0), "Certification already exists.");
         certifications[account] = Certification({
             certifier: msg.sender,
             proof: proof,
@@ -33,7 +33,8 @@ contract Registry is WhitelistedRole {
     function removeCertification(address account) public {
         require(
             account == msg.sender ||
-                certifications[account].certifier == msg.sender
+                certifications[account].certifier == msg.sender,
+            "You are not the owner of this certification."
         );
         delete certifications[account];
         emit CertificationRemoved(account);

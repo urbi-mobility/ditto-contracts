@@ -5,11 +5,11 @@ TL;DR: rent cars by using your digital driving license.
 
 ## Table of Contents
 - [Introduction](#problem)
+- [Manual](./docs/manual.md)
 - [Specification](./docs/specification.md)
 - [Why Blockchain](./docs/why-blockchain.md)
 - [Integration](./docs/integration.md)
 - [Data Flow](./docs/data-flow.md)
-- [Manual](./docs/manual.md)
 
 ## Problem
 Signing up for a car sharing service requires users to go through a [Know Your Customer](https://en.wikipedia.org/wiki/Know_your_customer) (KYC) process. This process has to be repeated each time a user wants to sign up to a new, different service. Moreover, the KYC fee is often paid by users themselves. That's pretty frustrating: as a user, why should I pay for KYC if I did it already? Why should I wait days to get access to the car sharing service? As a car sharing provider: KYC has a negative impact on the conversion rate, I'm losing money.
