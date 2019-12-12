@@ -94,6 +94,7 @@ INFURA_KEY=<your infura key>
 
 This allows the CLI utility `truffle` to use the funds in your wallet to deploy the smart contract.
 
+<<<<<<< HEAD
 ## Usage
 
 This section enumerates all possible use cases for the Registry smart contract. A smart contract can be called in many different ways, here we show how to use it from the custom command line interface and programmatically. In both cases make sure to have all dependencies correctly installed by running `npm install`.
