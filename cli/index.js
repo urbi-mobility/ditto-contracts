@@ -208,9 +208,12 @@ async function authorityRemove(address, ctx) {
   return await call("removeWhitelisted", [address], ctx);
 }
 
-// Test
 async function adminRenounce(ctx) {
   return await call("addWhitelistAdmin", ctx);
+}
+
+async function certificationRemove(address, ctx) {
+  return await call("removeCertification", [address], ctx);
 }
 
 function prepare(callback) {
@@ -235,6 +238,9 @@ program.command("admin-add <address>").action(prepare(adminAdd));
 program.command("admin-renounce").action(prepare(adminRenounce));
 program.command("authority-add <address>").action(prepare(authorityAdd));
 program.command("authority-remove <address>").action(prepare(authorityRemove));
+program
+  .command("certification-remove <address>")
+  .action(prepare(certificationRemove));
 
 try {
   program.parse(process.argv);
