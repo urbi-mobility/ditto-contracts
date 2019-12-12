@@ -1,16 +1,18 @@
 # Data Flow for the Authentication Protocol
-BLOCK-ID is a protocol that allows users to authenticate themselves to multiple, different mobility sharing providers.
 
-BLOCK-ID aims to be a privacy preserving, GDPR compliant identity protocol.
+*ditto* is a protocol that allows users to authenticate themselves to multiple, different mobility sharing providers.
 
-To use BLOCK-ID, users must first validate their identity and driver's license using a Certification Authority (CA). If the validation is successful, the CA emits a digital proof (stored in the Main Ethereum Network) that users can show to prove their identity. Once the validation process is over, the control is in the hands of the user, and the CA removes the personal information of the user from its database.
+*ditto* aims to be a privacy preserving, GDPR compliant identity protocol.
+
+To use *ditto*, users must first validate their identity and driver's license using a Certification Authority (CA). If the validation is successful, the CA emits a digital proof (stored in the Main Ethereum Network) that users can show to prove their identity. Once the validation process is over, the control is in the hands of the user, and the CA removes the personal information of the user from its database.
 
 This document explains how the data is managed, shared, stored, and used across the different parties. The goal is to show how the authentication protocol works. There will be another document in the future to explain how the validation process works. This one is limited to the interaction between the end user and a Shared Mobility Provider.
 
 ## Parties Storing Data
+
 The parties storing data are:
 - *User*: a generic user of the system.
-- *Wallet App*: a BLOCK-ID compatible mobile application, installed in the *User*'s smartphone.
+- *Wallet App*: a *ditto* compatible mobile application, installed in the *User*'s smartphone.
 - *Registry*: the smart contract, deployed in the public Main Ethereum Network, where the proofs are stored.
 - *Shared Mobility Provider*: a provider of shared vehicles, such as cars, bikes, scooters, etc.
 
@@ -54,8 +56,9 @@ In the document there is also field called **nonce**. The **nonce** is a number 
 By including the **nonce** in the hashing of the private identifiable information, we make it practically impossible to revert the hash.
 
 ## Data Flow for User Authentication
+
 In this section we analyze how the authentication process works from a data perspective. In order to authenticate to a *Mobility Sharing Provider*, a user must have:
-- The BLOCK-ID *Wallet App* installed in their smartphone.
+- The *ditto* *Wallet App* installed in their smartphone.
 - Their identity already validated by a CA.
 - At least one *Shared Mobility Provider* App, in order to be able to authenticate somewhere.
 
@@ -71,6 +74,7 @@ Authenticating to a *Shared Mobility Provider*, the user allows the *Wallet App*
 Once the user decides to authenticate to a *Shared Mobility Provider*,
 
 ## To sum up
+
 Given a user that successfully registered to a *Shared Mobility Provider* using the *Wallet App*, the state of the data is the following:
 - The private information of the user is stored in the user's smartphone, and it's accessible only to the *Wallet App*. This information is accessible only to the user and it's not public. This information includes the secret **nonce**.
 - The *Registry* contains the hash of the private information of the user. It is impossible to revert the hash, unless you have the full data used to generate the hash. This data is publicly accessible.

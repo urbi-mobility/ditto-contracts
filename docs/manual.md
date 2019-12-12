@@ -33,6 +33,21 @@ In order to use Ethereum you need few things:
 
 Install [MetaMask](https://metamask.io/) to create your account. If you are going to use the account for deploying things in production, make sure to **backup your passphrase**! If you forget it or lose it, you'll lose your money, and there is no way back.
 
+##### About multi-signature wallets
+
+While managing the smart contract from a single account is a viable option, a better approach would be to use a multi-signature (also called *multisig*) wallet to operate it.
+
+A multisig wallet is nothing more that another smart contract owned by multiple addresses. The multisig wallet stores transactions that are executed once at least `n` owner signatures (out of `m` total owners) has been collected. The multisig can hold funds and call other smart contracts, and it can be the owner of other contracts.
+
+Using a multisig wallet has many benefits, such as:
+
+- Better security: the attacker needs to compromise `n` keys in order to control the smart contract.
+- More safety: up to `m - n` private keys can be lost without losing the smart contract forever.
+- Lower error rate: an action is vetted by `n` participants, so responsibility is distributed amongst all owners.
+- Multi paradigm: multisig wallets can easily model a hierarchy of a company or of an organization, or voting systems.
+
+There are many implementations of multisig wallets. A simple and secure one is the [Gnosis multisig wallet](https://wallet.gnosis.pm/).
+
 ##### Other ways to create an Ethereum Account
 
 To create an Ethereum account you can also use:
@@ -81,9 +96,18 @@ This allows the CLI utility `truffle` to use the funds in your wallet to deploy 
 
 ## Usage
 
+This section enumerates all possible use cases for the Registry smart contract. A smart contract can be called in many different ways, here we show how to use it from the custom command line interface and programmatically. In both cases make sure to have all dependencies correctly installed by running `npm install`.
+
 ### Deploy the Registry smart contract
 
 The `Registry` smart contract is ready to be deployed as it is. Once the smart contract is **mined** (i.e. included in a block) it is ready to be used.
+
+Note that the deployment will generate a new file or update the existing one in `/build/contracts/Registry.json`. This file contains two important information:
+
+- The **ABI** (abstract binary interface) of the contract, a JSON containing all data about attributes, methods, and signatures exposed to the end user.
+- The **addresses** of the smart contracts deployed. Note that a single smart contract can be deployed on different networks, and the address will differ on each network.
+
+Make sure to keep the `Registry.json` file once you deploy the smart contact. If you lose it well, don't worry much, you can recreate it.
 
 The smart contract has a role-based access control system that allows only selected accounts to do certain actions (for more information you can check the documentation about [access control](https://docs.openzeppelin.com/contracts/2.x/access-control) in the OpenZeppelin website).
 
@@ -128,6 +152,8 @@ After the smart contract has been deployed, the `owner` can whitelist `admins`. 
 node cli admin-add <admin address>
 ```
 
+### Use the Registry smart contract programmatically
+
 ### Manage the certification authorities whitelist
 
 `owner` and `admins` can add and remove certification authorities from the **whitelist** of the contract.
@@ -146,4 +172,12 @@ Compared to the previous commands, adding a certificate is a more complex operat
 
 ### Verify a certification
 
-This operation requires writing some code as well. For more information check the second part of [registration.js](../example/register.js).
+This operation requires writing some code as well. The process in coded and described in the second part of [registration.js](../example/register.js).
+
+### Get notified when a certificate is added or removed
+
+Every time a new certification is added to or removed from the registry, the Smart Contract fires an event. Many Ethereum libraries allow to listen to those events, e.g. the library Web3.js exposes [an interface](https://web3js.readthedocs.io/en/v1.2.4/web3-eth-contract.html) to catch events and react to them. It's up to the providers to implement their logic to update their database.
+
+### About data flow, GDPR, and privacy
+
+We have an extensive document on how data is mnaged in the [Data Flow for the Authentication Protocol](./data-flow.md).
