@@ -26,7 +26,7 @@ This section explains the authentication flow from the Provider perspective. Rou
 The App opens the Wallet by opening a deep link to:
 
 ```bash
-urbiwallet://consent/<caller_readable_name>/<caller_callback_link>?challenge=<challenge>
+ditto://consent/<caller_readable_name>/<caller_callback_link>?challenge=<challenge>&fields=<userDataFields>
 ```
 
 where:
@@ -39,7 +39,7 @@ where:
 An example link could thus be:
 
 ```
-urbiwallet://consent/My%20App/myapp%3A%2F%2Fwallet-callback?challenge=439509230203971840
+ditto://consent/My%20App/myapp%3A%2F%2Fwallet-callback?challenge=439509230203971840&fields=firstName,lastName,dlNumber
 ```
 
 [1]: https://developer.android.com/training/app-links/deep-linking
