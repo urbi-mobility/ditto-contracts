@@ -35,6 +35,7 @@ where:
     > `My App` is requesting to read your personal data. Confirm letting `My App` read your data? \[Yes\] \[No\]
 * `<caller_callback_link>` is the URI-encoded link that the Wallet will open to notify the App of the outcome of the access request (e.g., `myapp%3A%2F%2Fwallet-callback`). The App must therefore be configured to process these deep links. See [this guide for Android][1], and [this one for iOS][2] for more info
 * `challenge` is a random string that the Wallet will sign using Alice's private key
+* `userDataFields` is a comma-separated list of fields that the App would like to retrieve from the Wallet
 
 An example link could thus be:
 
